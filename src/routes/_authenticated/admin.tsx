@@ -207,6 +207,8 @@ function AdminPage() {
           </button>
         )}
 
+        <ConstellationManager categories={categories} onDone={refresh} />
+
         <section className="space-y-4">
           <div className="flex flex-wrap gap-2">
             <input
