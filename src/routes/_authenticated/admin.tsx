@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchCategories, fetchMemories } from "@/lib/memories";
 import { MemoryForm } from "@/components/admin/MemoryForm";
+import { ConstellationManager } from "@/components/admin/ConstellationManager";
 import type { Memory } from "@/lib/universe-types";
 
 export const Route = createFileRoute("/_authenticated/admin")({
