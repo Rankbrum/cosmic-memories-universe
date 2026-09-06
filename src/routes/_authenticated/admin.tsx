@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchCategories, fetchMemories } from "@/lib/memories";
 import { MemoryForm } from "@/components/admin/MemoryForm";
+import { ConstellationManager } from "@/components/admin/ConstellationManager";
 import type { Memory } from "@/lib/universe-types";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -94,6 +95,7 @@ function AdminPage() {
   function refresh() {
     void queryClient.invalidateQueries({ queryKey: ["memories"] });
     void queryClient.invalidateQueries({ queryKey: ["media-count"] });
+    void queryClient.invalidateQueries({ queryKey: ["categories"] });
   }
 
   async function remove(memory: Memory) {
@@ -204,6 +206,8 @@ function AdminPage() {
             + Adicionar memória
           </button>
         )}
+
+        <ConstellationManager categories={categories} onDone={refresh} />
 
         <section className="space-y-4">
           <div className="flex flex-wrap gap-2">
