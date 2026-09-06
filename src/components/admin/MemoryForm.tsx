@@ -67,7 +67,11 @@ export function MemoryForm({ categories, memory, onDone, onCancel }: MemoryFormP
         const { error } = await supabase.from("memories").update(payload).eq("id", memoryId);
         if (error) throw error;
       } else {
-        const { data, error } = await supabase.from("memories").insert(payload).select("id").single();
+        const { data, error } = await supabase
+          .from("memories")
+          .insert(payload)
+          .select("id")
+          .single();
         if (error) throw error;
         memoryId = data.id;
       }
@@ -124,7 +128,11 @@ export function MemoryForm({ categories, memory, onDone, onCancel }: MemoryFormP
         }`}
       >
         {coverPreview ? (
-          <img src={coverPreview} alt="Prévia da foto principal" className="mx-auto max-h-44 rounded-md object-cover" />
+          <img
+            src={coverPreview}
+            alt="Prévia da foto principal"
+            className="mx-auto max-h-44 rounded-md object-cover"
+          />
         ) : (
           <p className="text-muted-foreground">Arraste a foto principal ou escolha do celular</p>
         )}
@@ -139,13 +147,23 @@ export function MemoryForm({ categories, memory, onDone, onCancel }: MemoryFormP
 
       <label className="block text-xs text-muted-foreground">
         Título
-        <input value={title} onChange={(e) => setTitle(e.target.value)} required className={field} />
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+          className={field}
+        />
       </label>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block text-xs text-muted-foreground">
           Data
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={field} />
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className={field}
+          />
         </label>
         <label className="block text-xs text-muted-foreground">
           Local (opcional)
@@ -166,7 +184,11 @@ export function MemoryForm({ categories, memory, onDone, onCancel }: MemoryFormP
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block text-xs text-muted-foreground">
           Constelação
-          <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className={field}>
+          <select
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            className={field}
+          >
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -218,7 +240,9 @@ export function MemoryForm({ categories, memory, onDone, onCancel }: MemoryFormP
         />
       </label>
       {gallery.length > 0 && (
-        <p className="text-xs text-gold">{gallery.length} arquivos serão adicionados a esta estrela.</p>
+        <p className="text-xs text-gold">
+          {gallery.length} arquivos serão adicionados a esta estrela.
+        </p>
       )}
 
       <div className="flex flex-wrap items-center gap-3">
@@ -229,7 +253,11 @@ export function MemoryForm({ categories, memory, onDone, onCancel }: MemoryFormP
         >
           Adicionar ao nosso universo
         </button>
-        <button type="button" onClick={onCancel} className="text-[0.6rem] tracking-cinema text-muted-foreground hover:text-gold">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="text-[0.6rem] tracking-cinema text-muted-foreground hover:text-gold"
+        >
           Cancelar
         </button>
         {status && <p className="text-xs text-muted-foreground">{status}</p>}

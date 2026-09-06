@@ -95,7 +95,10 @@ export function FinalScene({ onContinue }: { onContinue: () => void }) {
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-end gap-6 px-8 pb-24 text-center">
         <p className="font-display text-3xl tracking-[0.3em] text-gold">R ♥ M</p>
         {line >= 0 && (
-          <p key={line} className="animate-fade-rise max-w-lg whitespace-pre-line font-display text-2xl text-foreground/95">
+          <p
+            key={line}
+            className="animate-fade-rise max-w-lg whitespace-pre-line font-display text-2xl text-foreground/95"
+          >
             {FINAL_LINES[line]}
           </p>
         )}

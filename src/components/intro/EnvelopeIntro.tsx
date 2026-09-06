@@ -61,8 +61,7 @@ export function EnvelopeIntro({ onEnter }: { onEnter: () => void }) {
               style={{
                 height: "58%",
                 clipPath: "polygon(0 0, 100% 0, 50% 100%)",
-                background:
-                  "linear-gradient(180deg, oklch(0.3 0.1 14), oklch(0.2 0.08 14))",
+                background: "linear-gradient(180deg, oklch(0.3 0.1 14), oklch(0.2 0.08 14))",
                 borderBottom: "1px solid color-mix(in oklab, var(--gold) 25%, transparent)",
               }}
             />
@@ -92,7 +91,9 @@ export function EnvelopeIntro({ onEnter }: { onEnter: () => void }) {
                 boxShadow: "var(--shadow-glow), inset 0 2px 6px oklch(1 0 0 / 12%)",
               }}
             >
-              <span className="font-display text-2xl tracking-widest text-gold-soft">R &amp; M</span>
+              <span className="font-display text-2xl tracking-widest text-gold-soft">
+                R &amp; M
+              </span>
             </div>
           </div>
         </button>

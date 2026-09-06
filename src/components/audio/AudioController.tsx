@@ -11,7 +11,9 @@ export function AudioController({ active }: { active: boolean }) {
 
   useEffect(() => {
     if (!active || ctxRef.current) return;
-    const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const Ctx =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     if (!Ctx) return;
     const ctx = new Ctx();
     const gain = ctx.createGain();

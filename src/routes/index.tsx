@@ -72,7 +72,10 @@ function UniversePage() {
         <p className="max-w-md text-sm text-muted-foreground">
           Este aparelho não consegue desenhar a galáxia em 3D, mas todas as memórias continuam aqui.
         </p>
-        <Link to="/timeline" className="border-b border-gold/40 pb-1 text-[0.65rem] tracking-cinema text-gold">
+        <Link
+          to="/timeline"
+          className="border-b border-gold/40 pb-1 text-[0.65rem] tracking-cinema text-gold"
+        >
           Ver nossa linha do tempo
         </Link>
       </div>
@@ -100,7 +103,10 @@ function UniversePage() {
 
       <nav className="pointer-events-auto absolute inset-x-0 bottom-0 flex items-center justify-between gap-4 p-5 sm:p-8">
         <div className="flex items-center gap-5">
-          <Link to="/timeline" className="text-[0.6rem] tracking-cinema text-muted-foreground hover:text-gold">
+          <Link
+            to="/timeline"
+            className="text-[0.6rem] tracking-cinema text-muted-foreground hover:text-gold"
+          >
             Linha do tempo
           </Link>
           <AudioController active />

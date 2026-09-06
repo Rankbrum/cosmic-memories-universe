@@ -50,12 +50,9 @@ export function MemoryStar({
     if (dist < REVEAL_FAR && !near) setNear(true);
     else if (dist > REVEAL_FAR * 1.6 && near) setNear(false);
 
-    const proximity = THREE.MathUtils.clamp(
-      (REVEAL_FAR - dist) / (REVEAL_FAR - REVEAL_NEAR),
-      0,
-      1,
-    );
-    const pulse = 1 + Math.sin(state.clock.elapsedTime * (legendary ? 1.1 : 1.8) + node.size * 20) * 0.06;
+    const proximity = THREE.MathUtils.clamp((REVEAL_FAR - dist) / (REVEAL_FAR - REVEAL_NEAR), 0, 1);
+    const pulse =
+      1 + Math.sin(state.clock.elapsedTime * (legendary ? 1.1 : 1.8) + node.size * 20) * 0.06;
     const target = node.size * (1 + proximity * 2.6) * pulse * (hovered ? 1.18 : 1);
 
     if (glow.current) {
@@ -94,7 +91,13 @@ export function MemoryStar({
           depthWrite={false}
           blending={THREE.AdditiveBlending}
           color={
-            node.memory.secret ? "#ffc2d4" : legendary ? "#ffd9a1" : node.memory.importance === "special" ? "#ffe9c9" : "#fff6e8"
+            node.memory.secret
+              ? "#ffc2d4"
+              : legendary
+                ? "#ffd9a1"
+                : node.memory.importance === "special"
+                  ? "#ffe9c9"
+                  : "#fff6e8"
           }
           opacity={0.7}
         />

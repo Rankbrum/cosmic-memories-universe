@@ -8,7 +8,10 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Entrar — O Universo de Renan & Michele" },
-      { name: "description", content: "Área privada para administrar as memórias do nosso universo." },
+      {
+        name: "description",
+        content: "Área privada para administrar as memórias do nosso universo.",
+      },
       { name: "robots", content: "noindex, nofollow" },
       { property: "og:title", content: "Entrar — O Universo de Renan & Michele" },
       { property: "og:description", content: "Área privada do nosso universo." },

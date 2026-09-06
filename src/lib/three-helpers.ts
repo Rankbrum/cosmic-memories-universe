@@ -29,8 +29,7 @@ export function detectQuality(): QualityTier {
   const cores = navigator.hardwareConcurrency ?? 4;
   const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   const reduced =
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduced) return "low";
   if (mobile && cores <= 4) return "low";
   if (mobile || cores <= 6) return "balanced";
@@ -49,8 +48,8 @@ export function supportsWebGL(): boolean {
     const canvas = document.createElement("canvas");
     return Boolean(
       canvas.getContext("webgl2") ??
-        canvas.getContext("webgl") ??
-        canvas.getContext("experimental-webgl"),
+      canvas.getContext("webgl") ??
+      canvas.getContext("experimental-webgl"),
     );
   } catch {
     return false;

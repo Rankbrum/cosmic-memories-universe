@@ -70,11 +70,7 @@ export function MemoryExperience({ memory, onClose }: { memory: Memory; onClose:
       aria-modal="true"
       aria-label={memory.title}
     >
-      <div
-        className="absolute inset-0 bg-ink/70 backdrop-blur-[2px]"
-        onClick={close}
-        aria-hidden
-      />
+      <div className="absolute inset-0 bg-ink/70 backdrop-blur-[2px]" onClick={close} aria-hidden />
       <article className="glass-panel relative m-3 w-full max-w-3xl overflow-hidden rounded-xl">
         {memory.secret && (
           <p className="bg-wine-deep/70 px-6 py-2 text-center text-[0.65rem] tracking-cinema text-gold">

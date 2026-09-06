@@ -67,7 +67,11 @@ export interface UniverseSceneProps {
 export function UniverseScene({ memories, categories, focusId, onSelect }: UniverseSceneProps) {
   const [quality] = useState(detectQuality);
   const nodes = useMemo(
-    () => layoutStars(memories, categories.map((c) => c.id)),
+    () =>
+      layoutStars(
+        memories,
+        categories.map((c) => c.id),
+      ),
     [memories, categories],
   );
   const focus = useMemo(() => nodes.find((n) => n.memory.id === focusId) ?? null, [nodes, focusId]);

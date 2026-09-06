@@ -25,8 +25,18 @@ export const Route = createFileRoute("/timeline")({
 });
 
 const MONTHS = [
-  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
 ];
 
 function TimelinePage() {
@@ -35,7 +45,10 @@ function TimelinePage() {
     queryKey: ["memories"],
     queryFn: fetchMemories,
   });
-  const { data: categories = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
   const categoryName = (id: string | null) => categories.find((c) => c.id === id)?.name ?? null;
 
   const years = useMemo(() => {
@@ -55,11 +68,16 @@ function TimelinePage() {
       <div className="mx-auto max-w-2xl">
         <p className="text-[0.6rem] tracking-cinema text-gold/80">Our Universe</p>
         <h1 className="mt-2 font-display text-3xl sm:text-4xl">Nossa linha do tempo</h1>
-        <Link to="/" className="mt-4 inline-block text-[0.6rem] tracking-cinema text-muted-foreground hover:text-gold">
+        <Link
+          to="/"
+          className="mt-4 inline-block text-[0.6rem] tracking-cinema text-muted-foreground hover:text-gold"
+        >
           ← Voltar ao universo
         </Link>
 
-        {isLoading && <p className="mt-12 text-sm text-muted-foreground">Recuperando nossas memórias…</p>}
+        {isLoading && (
+          <p className="mt-12 text-sm text-muted-foreground">Recuperando nossas memórias…</p>
+        )}
         {!isLoading && years.length === 0 && (
           <p className="mt-12 font-display text-xl text-foreground/80">
             Algumas memórias ainda não aconteceram.
@@ -72,7 +90,9 @@ function TimelinePage() {
               <h2 className="font-display text-2xl text-gold">{year}</h2>
               <ol className="mt-5 space-y-6 border-l border-gold/20 pl-6">
                 {list.map((m) => {
-                  const month = m.memory_date ? MONTHS[Number(m.memory_date.slice(5, 7)) - 1] : null;
+                  const month = m.memory_date
+                    ? MONTHS[Number(m.memory_date.slice(5, 7)) - 1]
+                    : null;
                   return (
                     <li key={m.id} className="relative">
                       <span

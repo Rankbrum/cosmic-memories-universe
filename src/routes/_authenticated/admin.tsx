@@ -10,7 +10,10 @@ export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title: "Painel de memórias — Renan & Michele" },
-      { name: "description", content: "Painel privado para adicionar e organizar as memórias do universo." },
+      {
+        name: "description",
+        content: "Painel privado para adicionar e organizar as memórias do universo.",
+      },
       { name: "robots", content: "noindex, nofollow" },
       { property: "og:title", content: "Painel de memórias — Renan & Michele" },
       { property: "og:description", content: "Painel privado do nosso universo." },
@@ -32,8 +35,14 @@ function AdminPage() {
   const [importance, setImportance] = useState("all");
   const [onlySecret, setOnlySecret] = useState(false);
 
-  const { data: memories = [], isLoading } = useQuery({ queryKey: ["memories"], queryFn: fetchMemories });
-  const { data: categories = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
+  const { data: memories = [], isLoading } = useQuery({
+    queryKey: ["memories"],
+    queryFn: fetchMemories,
+  });
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+  });
   const { data: isAdmin } = useQuery({
     queryKey: ["is-admin"],
     queryFn: async () => {
@@ -45,13 +54,18 @@ function AdminPage() {
   const { data: mediaCount = 0 } = useQuery({
     queryKey: ["media-count"],
     queryFn: async () => {
-      const { count } = await supabase.from("memory_media").select("id", { count: "exact", head: true });
+      const { count } = await supabase
+        .from("memory_media")
+        .select("id", { count: "exact", head: true });
       return count ?? 0;
     },
   });
 
   const years = useMemo(
-    () => [...new Set(memories.map((m) => m.memory_date?.slice(0, 4)).filter(Boolean) as string[])].sort(),
+    () =>
+      [
+        ...new Set(memories.map((m) => m.memory_date?.slice(0, 4)).filter(Boolean) as string[]),
+      ].sort(),
     [memories],
   );
 
@@ -115,17 +129,27 @@ function AdminPage() {
       <div className="mx-auto max-w-4xl space-y-8">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-[0.6rem] tracking-cinema text-gold/80">O Universo de Renan &amp; Michele</p>
+            <p className="text-[0.6rem] tracking-cinema text-gold/80">
+              O Universo de Renan &amp; Michele
+            </p>
             <h1 className="mt-1 font-display text-3xl">Painel de memórias</h1>
           </div>
           <div className="flex items-center gap-4 text-[0.6rem] tracking-cinema">
             <Link to="/" className="text-muted-foreground hover:text-gold">
               Ver universo
             </Link>
-            <button type="button" onClick={exportJson} className="text-muted-foreground hover:text-gold">
+            <button
+              type="button"
+              onClick={exportJson}
+              className="text-muted-foreground hover:text-gold"
+            >
               Exportar nossas memórias
             </button>
-            <button type="button" onClick={signOut} className="text-muted-foreground hover:text-gold">
+            <button
+              type="button"
+              onClick={signOut}
+              className="text-muted-foreground hover:text-gold"
+            >
               Sair
             </button>
           </div>
@@ -197,7 +221,11 @@ function AdminPage() {
                 </option>
               ))}
             </select>
-            <select value={category} onChange={(e) => setCategory(e.target.value)} className={field}>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className={field}
+            >
               <option value="all">Todas as constelações</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -205,30 +233,48 @@ function AdminPage() {
                 </option>
               ))}
             </select>
-            <select value={importance} onChange={(e) => setImportance(e.target.value)} className={field}>
+            <select
+              value={importance}
+              onChange={(e) => setImportance(e.target.value)}
+              className={field}
+            >
               <option value="all">Toda importância</option>
               <option value="normal">Normal</option>
               <option value="special">Especial</option>
               <option value="legendary">Lendária</option>
             </select>
             <label className="flex items-center gap-2 text-xs text-muted-foreground">
-              <input type="checkbox" checked={onlySecret} onChange={(e) => setOnlySecret(e.target.checked)} />
+              <input
+                type="checkbox"
+                checked={onlySecret}
+                onChange={(e) => setOnlySecret(e.target.checked)}
+              />
               Secretas
             </label>
           </div>
 
-          {isLoading && <p className="text-xs text-muted-foreground">Recuperando nossas memórias…</p>}
+          {isLoading && (
+            <p className="text-xs text-muted-foreground">Recuperando nossas memórias…</p>
+          )}
 
           <ul className="space-y-2">
             {filtered.map((m) => (
               <li key={m.id} className="glass-panel flex items-center gap-4 rounded-lg p-3">
                 <div className="h-14 w-14 shrink-0 overflow-hidden rounded-md bg-muted">
-                  {m.coverUrl && <img src={m.coverUrl} alt={m.title} className="h-full w-full object-cover" />}
+                  {m.coverUrl && (
+                    <img src={m.coverUrl} alt={m.title} className="h-full w-full object-cover" />
+                  )}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-display text-lg">{m.title}</p>
                   <p className="truncate text-[0.6rem] tracking-cinema text-muted-foreground">
-                    {[m.memory_date, m.location, m.importance, m.secret ? "secreta" : null, m.visibility]
+                    {[
+                      m.memory_date,
+                      m.location,
+                      m.importance,
+                      m.secret ? "secreta" : null,
+                      m.visibility,
+                    ]
                       .filter(Boolean)
                       .join(" · ")}
                   </p>
