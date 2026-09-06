@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1788725287039,
+      "tag": "0000_create_universe_schema",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788725314662,
+      "tag": "0001_memories_storage_policies",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788725586135,
+      "tag": "0002_claim_admin_function",
+      "breakpoints": true
+    }
+  ]
+}
