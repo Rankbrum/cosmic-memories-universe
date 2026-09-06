@@ -66,7 +66,7 @@ function TimelinePage() {
   return (
     <main className="night-veil min-h-screen px-6 py-14 sm:px-10">
       <div className="mx-auto max-w-2xl">
-        <p className="text-[0.6rem] tracking-cinema text-gold/80">Our Universe</p>
+        <p className="text-[0.6rem] tracking-cinema text-gold/80">Nosso Universo</p>
         <h1 className="mt-2 font-display text-3xl sm:text-4xl">Nossa linha do tempo</h1>
         <Link
           to="/"
