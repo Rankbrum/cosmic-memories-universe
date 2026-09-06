@@ -93,7 +93,7 @@ function UniversePage() {
 
       <header className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-5 sm:p-8">
         <div>
-          <p className="text-[0.6rem] tracking-cinema text-gold/80">Our Universe</p>
+          <p className="text-[0.6rem] tracking-cinema text-gold/80">Nosso Universo</p>
           <h1 className="font-display text-xl text-foreground sm:text-2xl">Renan &amp; Michele</h1>
         </div>
         <p className="text-right text-[0.6rem] tracking-cinema text-muted-foreground">
