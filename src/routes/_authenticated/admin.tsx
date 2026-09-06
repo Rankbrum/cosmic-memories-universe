@@ -95,6 +95,7 @@ function AdminPage() {
   function refresh() {
     void queryClient.invalidateQueries({ queryKey: ["memories"] });
     void queryClient.invalidateQueries({ queryKey: ["media-count"] });
+    void queryClient.invalidateQueries({ queryKey: ["categories"] });
   }
 
   async function remove(memory: Memory) {
