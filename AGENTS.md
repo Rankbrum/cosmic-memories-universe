@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep constellation placement deterministic in `star-layout.ts`; shared anchors drive star clusters and camera focus to prevent navigation drift.

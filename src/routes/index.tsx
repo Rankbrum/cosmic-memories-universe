@@ -8,6 +8,7 @@ import { MemoryExperience } from "@/components/memories/MemoryExperience";
 import { FinalScene } from "@/components/universe/FinalScene";
 import { UniverseLoader } from "@/components/universe/UniverseLoader";
 import { AudioController } from "@/components/audio/AudioController";
+import { ConstellationNavigator } from "@/components/universe/ConstellationNavigator";
 import { fetchCategories, fetchMemories } from "@/lib/memories";
 import { supportsWebGL } from "@/lib/three-helpers";
 import type { Memory } from "@/lib/universe-types";
@@ -40,6 +41,7 @@ type Phase = "invitation" | "portal" | "universe" | "finale";
 function UniversePage() {
   const [phase, setPhase] = useState<Phase>("invitation");
   const [selected, setSelected] = useState<Memory | null>(null);
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const [webgl, setWebgl] = useState(true);
 
   useEffect(() => setWebgl(supportsWebGL()), []);
@@ -88,6 +90,7 @@ function UniversePage() {
         memories={memories}
         categories={categories}
         focusId={selected?.id ?? null}
+        activeCategoryId={activeCategoryId}
         onSelect={setSelected}
       />
 
@@ -100,6 +103,16 @@ function UniversePage() {
           {memories.length} {memories.length === 1 ? "memória" : "memórias"}
         </p>
       </header>
+
+      <ConstellationNavigator
+        categories={categories}
+        memories={memories}
+        activeId={activeCategoryId}
+        onSelect={(categoryId) => {
+          setSelected(null);
+          setActiveCategoryId(categoryId);
+        }}
+      />
 
       <nav className="pointer-events-auto absolute inset-x-0 bottom-0 flex items-center justify-between gap-4 p-5 sm:p-8">
         <div className="flex items-center gap-5">
