@@ -131,6 +131,21 @@
   box-shadow: var(--shadow-cinema);
 }
 
+.constellation-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--gold) 35%, transparent) transparent;
+  overscroll-behavior-inline: contain;
+}
+
+.constellation-scroll::-webkit-scrollbar {
+  height: 3px;
+}
+
+.constellation-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--gold) 35%, transparent);
+  border-radius: 999px;
+}
+
 @keyframes fade-rise {
   from {
     opacity: 0;

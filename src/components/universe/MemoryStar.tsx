@@ -80,9 +80,12 @@ export function MemoryStar({
         ref={glow}
         onClick={(e) => {
           e.stopPropagation();
+          if (dimmed) return;
           onSelect(node);
         }}
-        onPointerOver={() => setHovered(true)}
+        onPointerOver={() => {
+          if (!dimmed) setHovered(true);
+        }}
         onPointerOut={() => setHovered(false)}
       >
         <spriteMaterial

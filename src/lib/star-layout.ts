@@ -5,7 +5,10 @@ export interface StarNode {
   position: [number, number, number];
   size: number;
   constellationIndex: number;
+  constellationId: string;
 }
+
+export type ConstellationAnchor = [number, number, number];
 
 function hash(str: string): number {
   let h = 2166136261;
@@ -17,6 +20,15 @@ function hash(str: string): number {
 }
 
 const SIZES: Record<string, number> = { normal: 0.28, special: 0.42, legendary: 0.62 };
+
+export function getConstellationAnchor(index: number, totalCategories: number): ConstellationAnchor {
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  const total = Math.max(totalCategories, 1);
+  const y = 1 - (index / total) * 1.5 - 0.25;
+  const r = Math.sqrt(Math.max(0.05, 1 - y * y));
+  const theta = golden * index;
+  return [Math.cos(theta) * r * 26, y * 12, Math.sin(theta) * r * 26];
+}
 
 /**
  * Places each memory as a star. Memories of the same constellation cluster
@@ -35,16 +47,7 @@ export function layoutStars(memories: Memory[], categoryIds: string[]): StarNode
   const keys = [...groups.keys()];
   for (const key of keys) {
     const idx = Math.max(0, categoryIds.indexOf(key));
-    const golden = Math.PI * (3 - Math.sqrt(5));
-    const total = Math.max(categoryIds.length, 1);
-    const y = 1 - (idx / total) * 1.5 - 0.25;
-    const r = Math.sqrt(Math.max(0.05, 1 - y * y));
-    const theta = golden * idx;
-    const anchor: [number, number, number] = [
-      Math.cos(theta) * r * 26,
-      y * 12,
-      Math.sin(theta) * r * 26,
-    ];
+    const anchor = getConstellationAnchor(idx, categoryIds.length);
 
     const list = groups.get(key) ?? [];
     list.forEach((memory, i) => {
@@ -55,6 +58,7 @@ export function layoutStars(memories: Memory[], categoryIds: string[]): StarNode
       nodes.push({
         memory,
         constellationIndex: idx,
+        constellationId: key,
         position: [
           anchor[0] + (hx - 0.5) * spread * 2,
           anchor[1] + (hy - 0.5) * spread + Math.sin(i) * 0.7,
