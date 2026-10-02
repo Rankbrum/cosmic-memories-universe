@@ -7,7 +7,7 @@ quanto mais perto a câmera chega de uma estrela, mais a fotografia guardada nel
 
 ## Stack real do projeto
 
-O repositório roda em **TanStack Start (React 19 + Vite 7 + TypeScript)** com roteamento
+O repositório roda em **TanStack Start (React 19 + Vite 8 + TypeScript)** com roteamento
 por arquivos, e não Next.js. É o equivalente direto (SSR, rotas, funções de servidor) e
 foi mantido para não reescrever a fundação existente. Demais peças conforme pedido:
 
@@ -66,8 +66,16 @@ src/
 ## Storage
 
 Bucket **privado** `memories`, organizado por ano: `memories/<ano>/<uuid>-<arquivo>`.
-Nada depende de `/public`. A leitura acontece por **signed URLs** de 6 horas, geradas
-sob demanda e cacheadas em memória.
+As fotos das memórias gerenciadas no painel são lidas por **signed URLs** de 6 horas,
+geradas sob demanda e cacheadas em memória.
+
+A coleção de fotos cuja publicação foi solicitada pelo Founder em 02/10/2026 é versionada
+em `src/assets/published-memories/`, com catálogo em `src/lib/published-memories.ts`.
+Essas imagens são públicas, recebem URLs de assets do Vite e acompanham cada deploy.
+`fetchPublicUniverse()` reúne os sete álbuns com as memórias gerenciadas; as categorias
+são associadas pelo slug, preservando IDs e ordem do catálogo do Supabase.
+`fetchMemoryMedia()` resolve os álbuns publicados sem chamadas ao Storage.
+O painel continua consultando apenas as memórias editáveis do Supabase.
 
 ## Segurança
 

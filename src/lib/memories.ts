@@ -1,5 +1,10 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Category, Memory, MemoryMedia } from "./universe-types";
+import {
+  getPublishedMemories,
+  getPublishedMemoryMedia,
+  mergePublishedCategories,
+} from "./published-memories";
 
 const SIGNED_TTL = 60 * 60 * 6;
 const urlCache = new Map<string, string>();
@@ -49,7 +54,31 @@ export async function fetchMemories(): Promise<Memory[]> {
   return memories.map((m) => ({ ...m, coverUrl: m.cover_image ? signed[m.cover_image] : null }));
 }
 
+/** The public collection combines managed memories with the published photo albums. */
+export async function fetchPublicUniverse(): Promise<{
+  categories: Category[];
+  memories: Memory[];
+  managedDataUnavailable: boolean;
+}> {
+  const [categoryResult, memoryResult] = await Promise.allSettled([
+    fetchCategories(),
+    fetchMemories(),
+  ]);
+  const managedCategories = categoryResult.status === "fulfilled" ? categoryResult.value : [];
+  const managedMemories = memoryResult.status === "fulfilled" ? memoryResult.value : [];
+  const categories = mergePublishedCategories(managedCategories);
+  return {
+    categories,
+    memories: [...managedMemories, ...getPublishedMemories(categories)],
+    managedDataUnavailable:
+      categoryResult.status === "rejected" || memoryResult.status === "rejected",
+  };
+}
+
 export async function fetchMemoryMedia(memoryId: string): Promise<MemoryMedia[]> {
+  const publishedMedia = getPublishedMemoryMedia(memoryId);
+  if (publishedMedia) return publishedMedia;
+
   const { data, error } = await supabase
     .from("memory_media")
     .select("id,memory_id,type,storage_path,caption,position")

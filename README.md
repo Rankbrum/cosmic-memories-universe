@@ -18,6 +18,22 @@ Convite → portal → galáxia → constelações → estrelas → fotografias 
 Para várias memórias diferentes de uma vez, repita o passo 3 — cada memória vira uma estrela.
 Para 30 fotos da mesma viagem, é uma memória só com as 30 no campo **Álbum**.
 
+## Álbuns publicados com o site
+
+As fotografias escolhidas para a publicação de outubro de 2026 acompanham o código em
+`src/assets/published-memories/`. São 27 fotos diferentes, organizadas em sete álbuns em
+`src/lib/published-memories.ts`. As cópias idênticas dos arquivos enviados foram removidas;
+os originais únicos foram preservados sem recompressão.
+
+Esses álbuns aparecem nas constelações e em `/timeline`, junto das memórias do Supabase.
+As datas das fotografias não foram informadas, por isso aparecem em **Sem data**.
+As imagens verticais são exibidas inteiras no álbum.
+
+Essa coleção foi escolhida para publicação pública e suas imagens ficam nos assets do build.
+Para alterar os álbuns versionados, edite o catálogo e publique um novo commit. As memórias
+criadas pelo painel continuam sendo gerenciadas no Supabase, com suas regras de visibilidade
+e armazenamento privado.
+
 ## Rodando o projeto
 
 ```bash

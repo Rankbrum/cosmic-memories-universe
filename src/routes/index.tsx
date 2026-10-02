@@ -9,7 +9,7 @@ import { FinalScene } from "@/components/universe/FinalScene";
 import { UniverseLoader } from "@/components/universe/UniverseLoader";
 import { AudioController } from "@/components/audio/AudioController";
 import { ConstellationNavigator } from "@/components/universe/ConstellationNavigator";
-import { fetchCategories, fetchMemories } from "@/lib/memories";
+import { fetchPublicUniverse } from "@/lib/memories";
 import { supportsWebGL } from "@/lib/three-helpers";
 import type { Memory } from "@/lib/universe-types";
 
@@ -46,15 +46,17 @@ function UniversePage() {
 
   useEffect(() => setWebgl(supportsWebGL()), []);
 
-  const memoriesQuery = useQuery({ queryKey: ["memories"], queryFn: fetchMemories });
-  const categoriesQuery = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
+  const universeQuery = useQuery({
+    queryKey: ["public-universe"],
+    queryFn: fetchPublicUniverse,
+  });
 
   const memories = useMemo(
-    () => (memoriesQuery.data ?? []).filter((m) => m.visibility !== "private"),
-    [memoriesQuery.data],
+    () => (universeQuery.data?.memories ?? []).filter((m) => m.visibility !== "private"),
+    [universeQuery.data],
   );
-  const categories = categoriesQuery.data ?? [];
-  const loading = memoriesQuery.isLoading || categoriesQuery.isLoading;
+  const categories = universeQuery.data?.categories ?? [];
+  const loading = universeQuery.isLoading;
 
   if (phase === "invitation") {
     return <EnvelopeIntro onEnter={() => setPhase("portal")} />;
@@ -98,6 +100,11 @@ function UniversePage() {
         <div>
           <p className="text-[0.6rem] tracking-cinema text-gold/80">Nosso Universo</p>
           <h1 className="font-display text-xl text-foreground sm:text-2xl">Renan &amp; Michele</h1>
+          {universeQuery.data?.managedDataUnavailable && (
+            <p role="status" className="mt-2 max-w-xs text-xs text-muted-foreground">
+              Algumas memórias não puderam ser carregadas. Tente recarregar a página.
+            </p>
+          )}
         </div>
         <p className="text-right text-[0.6rem] tracking-cinema text-muted-foreground">
           {memories.length} {memories.length === 1 ? "memória" : "memórias"}

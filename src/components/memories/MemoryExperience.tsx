@@ -13,30 +13,21 @@ function formatDate(value: string | null) {
  * and contracts back into light when closed.
  */
 export function MemoryExperience({ memory, onClose }: { memory: Memory; onClose: () => void }) {
-  const [media, setMedia] = useState<MemoryMedia[]>([]);
+  const [media, setMedia] = useState<MemoryMedia[]>(memory.media ?? []);
   const [index, setIndex] = useState(0);
   const [closing, setClosing] = useState(false);
 
   useEffect(() => {
     let active = true;
+    setMedia(memory.media ?? []);
+    setIndex(0);
     fetchMemoryMedia(memory.id)
       .then((rows) => active && setMedia(rows))
       .catch(() => undefined);
     return () => {
       active = false;
     };
-  }, [memory.id]);
-
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") close();
-      if (e.key === "ArrowRight") setIndex((i) => Math.min(i + 1, Math.max(media.length - 1, 0)));
-      if (e.key === "ArrowLeft") setIndex((i) => Math.max(i - 1, 0));
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [media.length]);
+  }, [memory.id, memory.media]);
 
   function close() {
     if (closing) return;
@@ -60,6 +51,17 @@ export function MemoryExperience({ memory, onClose }: { memory: Memory; onClose:
         ]
       : [];
   const current = slides[Math.min(index, Math.max(slides.length - 1, 0))];
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowRight") setIndex((i) => Math.min(i + 1, Math.max(slides.length - 1, 0)));
+      if (e.key === "ArrowLeft") setIndex((i) => Math.max(i - 1, 0));
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slides.length]);
 
   return (
     <div
@@ -86,7 +88,8 @@ export function MemoryExperience({ memory, onClose }: { memory: Memory; onClose:
                 src={current.url}
                 alt={current.caption ?? memory.title}
                 loading="lazy"
-                className="h-full w-full object-cover"
+                decoding="async"
+                className="h-full w-full object-contain"
               />
             )
           ) : (
@@ -98,16 +101,18 @@ export function MemoryExperience({ memory, onClose }: { memory: Memory; onClose:
             <>
               <button
                 type="button"
+                disabled={index === 0}
                 onClick={() => setIndex((i) => Math.max(0, i - 1))}
-                className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-ink/60 px-3 py-2 text-gold"
+                className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-ink/60 px-3 py-2 text-gold disabled:opacity-30"
                 aria-label="Foto anterior"
               >
                 ‹
               </button>
               <button
                 type="button"
+                disabled={index >= slides.length - 1}
                 onClick={() => setIndex((i) => Math.min(slides.length - 1, i + 1))}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-ink/60 px-3 py-2 text-gold"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-ink/60 px-3 py-2 text-gold disabled:opacity-30"
                 aria-label="Próxima foto"
               >
                 ›

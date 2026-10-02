@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { fetchCategories, fetchMemories } from "@/lib/memories";
+import { fetchPublicUniverse } from "@/lib/memories";
 import { MemoryExperience } from "@/components/memories/MemoryExperience";
 import type { Memory } from "@/lib/universe-types";
 
@@ -41,18 +41,15 @@ const MONTHS = [
 
 function TimelinePage() {
   const [selected, setSelected] = useState<Memory | null>(null);
-  const { data: memories = [], isLoading } = useQuery({
-    queryKey: ["memories"],
-    queryFn: fetchMemories,
+  const { data, isLoading } = useQuery({
+    queryKey: ["public-universe"],
+    queryFn: fetchPublicUniverse,
   });
-  const { data: categories = [] } = useQuery({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
-  });
+  const categories = data?.categories ?? [];
   const categoryName = (id: string | null) => categories.find((c) => c.id === id)?.name ?? null;
 
   const years = useMemo(() => {
-    const visible = memories.filter((m) => m.visibility !== "private");
+    const visible = (data?.memories ?? []).filter((m) => m.visibility !== "private");
     const map = new Map<string, Memory[]>();
     for (const m of visible) {
       const year = m.memory_date ? m.memory_date.slice(0, 4) : "Sem data";
@@ -61,7 +58,7 @@ function TimelinePage() {
       map.set(year, list);
     }
     return [...map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
-  }, [memories]);
+  }, [data?.memories]);
 
   return (
     <main className="night-veil min-h-screen px-6 py-14 sm:px-10">
@@ -77,6 +74,11 @@ function TimelinePage() {
 
         {isLoading && (
           <p className="mt-12 text-sm text-muted-foreground">Recuperando nossas memórias…</p>
+        )}
+        {data?.managedDataUnavailable && (
+          <p role="status" className="mt-6 text-sm text-muted-foreground">
+            Algumas memórias não puderam ser carregadas. Tente recarregar a página.
+          </p>
         )}
         {!isLoading && years.length === 0 && (
           <p className="mt-12 font-display text-xl text-foreground/80">
