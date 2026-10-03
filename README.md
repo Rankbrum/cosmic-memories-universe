@@ -42,8 +42,11 @@ bun run dev      # http://localhost:8080
 bun run build    # build de produção
 ```
 
-Variáveis de ambiente: copie `.env.example` para `.env`. Os valores do Lovable Cloud já são
-injetados automaticamente no projeto; nunca coloque a chave de serviço no frontend.
+Variáveis de ambiente: copie `.env.example` para `.env`. O build usa
+`VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` do ambiente e, quando estiverem
+vazias, os valores públicos do `.env`. Na Vercel, variáveis com prefixo `VITE_` devem
+usar o tipo **Config**. Nunca coloque uma chave secreta ou de serviço no frontend;
+o build aceita apenas chaves publicáveis ou a chave legada com papel `anon`.
 
 ## Backend
 
