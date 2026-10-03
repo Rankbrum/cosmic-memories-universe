@@ -58,6 +58,18 @@ o build aceita apenas chaves publicáveis ou a chave legada com papel `anon`.
   Memórias privadas não aparecem para visitantes.
 - **Backup**: no painel, **Exportar nossas memórias** baixa um JSON com tudo.
 
+## Girando o universo
+
+Arraste com o mouse ou com um dedo para girar as constelações. A rolagem do mouse
+ou o gesto com dois dedos controla o zoom. Também é possível deslocar a visão com
+o botão direito do mouse ou com dois dedos.
+
+A câmera permanece na posição escolhida, inclusive com uma constelação selecionada
+e após abrir e fechar um álbum. **Giro automático** é opcional e começa desligado;
+qualquer gesto manual o interrompe. **Visão inicial** permite voltar ao enquadramento
+geral quando você quiser. Selecionar um capítulo no menu também enquadra sua constelação.
+O giro automático respeita a preferência do aparelho por movimento reduzido.
+
 ## Navegação alternativa
 
 `/timeline` mostra as memórias por ano e mês. É o caminho para leitores de tela,

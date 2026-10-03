@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { EnvelopeIntro } from "@/components/intro/EnvelopeIntro";
 import { PortalTransition } from "@/components/universe/PortalTransition";
-import { UniverseScene } from "@/components/universe/UniverseScene";
+import { UniverseScene, type UniverseViewRequest } from "@/components/universe/UniverseScene";
+import { Button } from "@/components/ui/button";
 import { MemoryExperience } from "@/components/memories/MemoryExperience";
 import { FinalScene } from "@/components/universe/FinalScene";
 import { UniverseLoader } from "@/components/universe/UniverseLoader";
@@ -42,9 +43,25 @@ function UniversePage() {
   const [phase, setPhase] = useState<Phase>("invitation");
   const [selected, setSelected] = useState<Memory | null>(null);
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
+  const [viewRequest, setViewRequest] = useState<UniverseViewRequest>({
+    sequence: 0,
+    categoryId: null,
+  });
+  const [autoRotate, setAutoRotate] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [webgl, setWebgl] = useState(true);
 
   useEffect(() => setWebgl(supportsWebGL()), []);
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => {
+      setReducedMotion(preference.matches);
+      if (preference.matches) setAutoRotate(false);
+    };
+    update();
+    preference.addEventListener("change", update);
+    return () => preference.removeEventListener("change", update);
+  }, []);
 
   const universeQuery = useQuery({
     queryKey: ["public-universe"],
@@ -93,6 +110,9 @@ function UniversePage() {
         categories={categories}
         focusId={selected?.id ?? null}
         activeCategoryId={activeCategoryId}
+        viewRequest={viewRequest}
+        autoRotate={autoRotate && !reducedMotion}
+        onManualControl={() => setAutoRotate(false)}
         onSelect={setSelected}
       />
 
@@ -111,6 +131,36 @@ function UniversePage() {
         </p>
       </header>
 
+      <div className="pointer-events-auto absolute left-5 top-24 z-10 flex flex-wrap items-center gap-2 sm:left-8">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          aria-pressed={autoRotate}
+          disabled={reducedMotion}
+          onClick={() => setAutoRotate((rotating) => !rotating)}
+          className="border-gold/20 bg-background/55 text-xs text-muted-foreground backdrop-blur-md hover:text-gold"
+        >
+          {autoRotate ? "Pausar giro" : "Giro automático"}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            setAutoRotate(false);
+            setActiveCategoryId(null);
+            setViewRequest((request) => ({ sequence: request.sequence + 1, categoryId: null }));
+          }}
+          className="border-gold/20 bg-background/55 text-xs text-muted-foreground backdrop-blur-md hover:text-gold"
+        >
+          Visão inicial
+        </Button>
+        <p className="pointer-events-none basis-full text-[0.65rem] text-muted-foreground">
+          Arraste para girar. Role ou use dois dedos para aproximar.
+        </p>
+      </div>
+
       <ConstellationNavigator
         categories={categories}
         memories={memories}
@@ -118,6 +168,8 @@ function UniversePage() {
         onSelect={(categoryId) => {
           setSelected(null);
           setActiveCategoryId(categoryId);
+          setAutoRotate(false);
+          setViewRequest((request) => ({ sequence: request.sequence + 1, categoryId }));
         }}
       />
 

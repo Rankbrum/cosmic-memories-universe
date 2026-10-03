@@ -1,6 +1,6 @@
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentRef } from "react";
 import * as THREE from "three";
 import { GalaxyDust } from "./GalaxyDust";
 import { MemoryStar } from "./MemoryStar";
@@ -55,41 +55,67 @@ function ConstellationLines({
   );
 }
 
-function CameraRig({
-  focus,
+export interface UniverseViewRequest {
+  sequence: number;
+  categoryId: string | null;
+}
+
+const INITIAL_POSITION: [number, number, number] = [0, 8, 42];
+const CAMERA_OPTIONS = { position: INITIAL_POSITION, fov: 60 };
+
+function UniverseControls({
+  memoryOpen,
   constellationFocus,
+  viewRequest,
+  autoRotate,
+  onManualControl,
 }: {
-  focus: StarNode | null;
+  memoryOpen: boolean;
   constellationFocus: ConstellationAnchor | null;
+  viewRequest: UniverseViewRequest;
+  autoRotate: boolean;
+  onManualControl: () => void;
 }) {
   const { camera } = useThree();
-  const home = useRef(new THREE.Vector3(0, 8, 42));
-  const target = useRef(new THREE.Vector3(0, 0, 0));
-  const destination = useRef(new THREE.Vector3());
+  const controls = useRef<ComponentRef<typeof OrbitControls>>(null);
+  const handledRequest = useRef(0);
 
-  useFrame((_, rawDelta) => {
-    const dt = Math.min(rawDelta, 0.05);
-    if (focus) {
-      const star = new THREE.Vector3(...focus.position);
-      const dir = star.clone().sub(camera.position).normalize();
-      const dest = star.clone().sub(dir.multiplyScalar(3.4));
-      camera.position.lerp(dest, 1 - Math.exp(-2.6 * dt));
-      target.current.lerp(star, 1 - Math.exp(-3 * dt));
-      camera.lookAt(target.current);
-    } else if (constellationFocus) {
-      const center = new THREE.Vector3(...constellationFocus);
-      const outward = center.clone().normalize();
-      destination.current.copy(center).add(outward.multiplyScalar(10));
-      camera.position.lerp(destination.current, 1 - Math.exp(-2.1 * dt));
-      target.current.lerp(center, 1 - Math.exp(-2.5 * dt));
-      camera.lookAt(target.current);
+  useEffect(() => {
+    const orbit = controls.current;
+    // Only deliberate navigation may reposition the camera. Refetches and
+    // opening/closing albums must preserve the view chosen by the visitor.
+    if (!orbit || handledRequest.current === viewRequest.sequence) return;
+    handledRequest.current = viewRequest.sequence;
+    orbit.autoRotate = false;
+    if (viewRequest.categoryId && constellationFocus) {
+      orbit.target.set(...constellationFocus);
+      const outward = orbit.target.clone().normalize().multiplyScalar(10);
+      camera.position.copy(orbit.target).add(outward);
     } else {
-      camera.position.lerp(home.current, 1 - Math.exp(-1.6 * dt));
-      target.current.lerp(new THREE.Vector3(0, 0, 0), 1 - Math.exp(-1.6 * dt));
-      camera.lookAt(target.current);
+      orbit.target.set(0, 0, 0);
+      camera.position.set(...INITIAL_POSITION);
     }
-  });
-  return null;
+    orbit.update();
+  }, [camera, constellationFocus, viewRequest]);
+
+  return (
+    <OrbitControls
+      ref={controls}
+      enabled={!memoryOpen}
+      enablePan
+      enableDamping={false}
+      rotateSpeed={0.45}
+      zoomSpeed={0.7}
+      minDistance={7}
+      maxDistance={90}
+      autoRotate={autoRotate}
+      autoRotateSpeed={0.12}
+      onStart={() => {
+        if (controls.current) controls.current.autoRotate = false;
+        onManualControl();
+      }}
+    />
+  );
 }
 
 export interface UniverseSceneProps {
@@ -97,6 +123,9 @@ export interface UniverseSceneProps {
   categories: Category[];
   focusId: string | null;
   activeCategoryId: string | null;
+  viewRequest: UniverseViewRequest;
+  autoRotate: boolean;
+  onManualControl: () => void;
   onSelect: (memory: Memory) => void;
 }
 
@@ -105,6 +134,9 @@ export function UniverseScene({
   categories,
   focusId,
   activeCategoryId,
+  viewRequest,
+  autoRotate,
+  onManualControl,
   onSelect,
 }: UniverseSceneProps) {
   const [quality] = useState(detectQuality);
@@ -116,7 +148,6 @@ export function UniverseScene({
       ),
     [memories, categories],
   );
-  const focus = useMemo(() => nodes.find((n) => n.memory.id === focusId) ?? null, [nodes, focusId]);
   const constellationFocus = useMemo(() => {
     if (!activeCategoryId) return null;
     const index = categories.findIndex((category) => category.id === activeCategoryId);
@@ -133,7 +164,8 @@ export function UniverseScene({
 
   return (
     <Canvas
-      camera={{ position: [0, 8, 42], fov: 60 }}
+      camera={CAMERA_OPTIONS}
+      className="cursor-grab active:cursor-grabbing"
       dpr={quality === "low" ? [1, 1.2] : [1, 1.9]}
       gl={{ antialias: quality !== "low" }}
     >
@@ -153,18 +185,12 @@ export function UniverseScene({
           onSelect={(n) => onSelect(n.memory)}
         />
       ))}
-      <CameraRig focus={focus} constellationFocus={constellationFocus} />
-      <OrbitControls
-        enabled={!focus && !constellationFocus}
-        enablePan={false}
-        enableDamping
-        dampingFactor={0.06}
-        rotateSpeed={0.45}
-        zoomSpeed={0.7}
-        minDistance={7}
-        maxDistance={90}
-        autoRotate
-        autoRotateSpeed={0.12}
+      <UniverseControls
+        memoryOpen={Boolean(focusId)}
+        constellationFocus={constellationFocus}
+        viewRequest={viewRequest}
+        autoRotate={autoRotate}
+        onManualControl={onManualControl}
       />
     </Canvas>
   );

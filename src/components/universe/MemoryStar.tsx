@@ -80,6 +80,7 @@ export function MemoryStar({
         ref={glow}
         onClick={(e) => {
           e.stopPropagation();
+          if (e.delta > 4) return;
           if (dimmed) return;
           onSelect(node);
         }}
